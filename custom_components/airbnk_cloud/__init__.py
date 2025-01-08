@@ -5,7 +5,8 @@ import logging
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.helpers.service import async_register_admin_service
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN, AIRBNK_API, AIRBNK_DEVICES
 
@@ -50,7 +51,7 @@ async def async_setup(hass, config):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Establish connection with Airbnk."""
 
     airbnk_api = AirbnkApi(hass, entry)
@@ -59,9 +60,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     hass.data[DOMAIN] = {AIRBNK_API: airbnk_api, AIRBNK_DEVICES: devices}
 
     for component in COMPONENT_TYPES:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+        await hass.config_entries.async_forward_entry_setups(entry, [component])
     return True
 
 
