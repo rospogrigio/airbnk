@@ -1,7 +1,7 @@
 """Support for Airbnk locks, treated as covers."""
 import logging
 
-from homeassistant.components.cover import SUPPORT_CLOSE, SUPPORT_OPEN, CoverEntity
+from homeassistant.components.cover import CoverEntity, CoverEntityFeature
 
 from .const import DOMAIN as AIRBNK_DOMAIN, AIRBNK_API, AIRBNK_DEVICES
 
@@ -41,8 +41,7 @@ class AirbnkLock(CoverEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
-        supported_features = SUPPORT_OPEN | SUPPORT_CLOSE
-        return supported_features
+        return CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE
 
     @property
     def unique_id(self):
